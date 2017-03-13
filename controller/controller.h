@@ -19,4 +19,5 @@ char** CtrlExpiredMaterialsByName(Controller* c, char* needle);
 char** CtrlExpiredMaterialsBySupplier(Controller* c, char* needle);
 char** CtrlExpiredMaterialsByQty(Controller* c, int qty);
 material** CtrlShortOnSupply(Controller* c, char* supplier, int qty, int descending);
+material** CtrlGetSupplierByExpMonth(Controller* c, char* supplier, int descending);
 Repository* CtrlGetRepository(Controller* c);

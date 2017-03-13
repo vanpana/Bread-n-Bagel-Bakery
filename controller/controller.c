@@ -221,6 +221,45 @@ material** CtrlShortOnSupply(Controller* c, char* supplier, int qty, int descend
     return shortItems;
 }
 
+material** CtrlGetSupplierByExpMonth(Controller* c, char* supplier, int descending)
+{
+    /*
+    Returns a list of materials short on supply from a supplier less than a quantity.
+    input: supplier - string, qty - int, descending - 0 if not, 1 if yes
+    output: list of sorted short on supply materials
+    */
+    material** shortItems = (material**)malloc(10 * sizeof(material*));
+    int i, j;
+    for (j = 0; j < 10; j++)
+        shortItems[j] = (material*)malloc(sizeof(material));
+
+    int counter = 0;
+
+    Repository* r = c->repository;
+
+    for (int i = 0; i < r->length; i++)
+        if (strcmp(r->items[i]->supplier, supplier) == 0)
+        {
+            shortItems[counter] = r->items[i];
+            counter++;
+            if (counter%10 == 0)
+            {
+                shortItems = (material**)realloc(shortItems, (counter + 10) * sizeof(material*));
+                for (j = counter + 1; j < counter + 10; j++)
+                    shortItems[j] = (material*)malloc(sizeof(material));
+            }
+        }
+
+    if (descending == 0)
+        sortByExpMonth(shortItems, counter, 0);
+    else
+        sortByExpMonth(shortItems, counter, 1);
+
+    shortItems[counter] = createMaterial("","",0,0,0,0);
+
+    return shortItems;
+}
+
 Repository* CtrlGetRepository(Controller* c)
 {
     /*

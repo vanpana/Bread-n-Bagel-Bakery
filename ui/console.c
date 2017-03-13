@@ -31,6 +31,7 @@ void printMenu()
     printf("4. Search expired items.\n");
     printf("5. Search expired items past some quantity.\n");
     printf("6. Search short on supply materials by supplier.\n");
+    printf("7 (activity). See all materials from supplier sorted by expiration month.\n");
     printf("print. Print all items.\n");
     printf("exit. Exit the program.\n");
 }
@@ -247,6 +248,45 @@ void uiGetShortOnSupply(Console* ui)
         printMaterial(shortItems[i]);
 }
 
+void uiGetSupplierByExpMonth(Console* ui)
+{
+    /*
+    Gets input from the user and validates, then sends the info to the controller
+        to get all the elements from certain supplier.
+    */
+    size_t size = 32;
+    int chars;
+    char* supplier = (char*)malloc(size * sizeof(char));
+    material** shortItems;
+
+
+    printf("Input supplier (-a if you want ascending):");
+    getline(&supplier, &size, stdin);
+    chars = getline(&supplier, &size, stdin);
+
+    supplier[strlen(supplier) - 1] = '\0';
+    if (strstr(supplier, "-a")== NULL)
+    {
+        if (strstr(supplier, "-") != NULL)
+            printf("Invalid Command");
+        else
+            shortItems = CtrlGetSupplierByExpMonth(ui->controller, supplier, 1);
+    }
+    else
+    {
+        if (supplier[strlen(supplier) - 3] == ' ')
+            supplier[strlen(supplier) - 3] = '\0';
+        else
+            supplier[strlen(supplier) - 2] = '\0';
+
+        shortItems = CtrlGetSupplierByExpMonth(ui->controller, supplier, 0);
+    }
+
+
+    for (int i = 0; strcmp(shortItems[i]->name, "") != 0; i++)
+        printMaterial(shortItems[i]);
+}
+
 char* getCommand()
 {
     /*
@@ -329,7 +369,7 @@ int validateCommand(Console* ui, char* command)
     }
     else
     {
-    for (int i = 1; i <= 6; i++)
+    for (int i = 1; i <= 9; i++)
       if ((int)command[0] - '0'== i)
         return 1;
     return 0;
@@ -363,6 +403,7 @@ void loop(Console* ui)
           if (command == 4) uiGetExpired(ui);
           if (command == 5) uiGetExpiredByQty(ui);
           if (command == 6) uiGetShortOnSupply(ui);
+          if (command == 7) uiGetSupplierByExpMonth(ui);
         }
     }
 }

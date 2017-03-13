@@ -16,6 +16,7 @@ void uiUpdateMaterials(Console* ui);
 void uiGetExpired(Console* ui);
 void uiGetExpiredByQty(Console* ui);
 void uiGetShortOnSupply(Console* ui);
+void uiGetSupplierByExpMonth(Console* ui);
 char* getCommand();
 int getInteger();
 int* getDateIntegers();

@@ -114,6 +114,27 @@ void sortByQty(material** items, int size, int desc)
         }
 }
 
+void sortByExpMonth(material** items, int size, int desc)
+{
+    for (int i = 0; i < size-1; i++)
+        for (int j = i+1; j < size; j++)
+        {
+            if (desc == 0 && items[i]->month > items[j]->month)
+            {
+
+                material* aux = items[i];
+                items[i] = items[j];
+                items[j] = aux;
+            }
+            else if (desc == 1 && items[i]->month < items[j]->month)
+            {
+                material* aux = items[i];
+                items[i] = items[j];
+                items[j] = aux;
+            }
+        }
+}
+
 void runAllTests()
 {
     runRepoTests();

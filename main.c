@@ -13,9 +13,9 @@ int main()
     Repository* repo = createRepository();
     Controller* ctrl = createController(repo);
 
-    CtrlAddItem(ctrl, "0.5L Water", "Aqua Carpatica", 01, 01, 2020, 1000);
+    CtrlAddItem(ctrl, "0.5L Water", "Aqua Carpatica", 01, 02, 2020, 1000);
     CtrlAddItem(ctrl, "1.5L Water", "Aqua Carpatica", 01, 01, 2020, 1003);
-    CtrlAddItem(ctrl, "1L Water", "Aqua Carpatica", 01, 01, 2020, 1001);
+    CtrlAddItem(ctrl, "1L Water", "Aqua Carpatica", 01, 03, 2020, 1001);
     CtrlAddItem(ctrl, "White Bread", "Panemar", 11, 03, 2017, 100);
     CtrlAddItem(ctrl, "Strudel", "Panemar", 20, 03, 2017, 76);
 
