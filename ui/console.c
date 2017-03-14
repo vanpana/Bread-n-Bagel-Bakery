@@ -32,6 +32,8 @@ void printMenu()
     printf("5. Search expired items past some quantity.\n");
     printf("6. Search short on supply materials by supplier.\n");
     printf("7 (activity). See all materials from supplier sorted by expiration month.\n");
+    printf("8. Undo\n");
+    printf("9. Redo\n");
     printf("print. Print all items.\n");
     printf("exit. Exit the program.\n");
 }
@@ -57,14 +59,17 @@ void uiAddMaterials(Console* ui)
     Gets input from the user and validates, then sends the info to the controller
         to add the material.
     */
+    size_t size;
     char* name = (char*)malloc(sizeof(char)), * supplier = (char*)malloc(sizeof(char));
     int qty;
     int* date = (int*)malloc(sizeof(int));
+
     printf("Input name: ");
-    scanf("%s", name);
+    getline(&name, &size, stdin); //dummy
+    name = getString();
 
     printf("Input supplier: ");
-    scanf("%s", supplier);
+    supplier = getString();
 
     printf("Input expiration date (dd.mm.yyyy): ");
     date = getDateIntegers();
@@ -96,9 +101,13 @@ void uiDeleteMaterials(Console* ui)
     Gets input from the user and validates, then sends the info to the controller
         to delete the material.
     */
+    size_t size;
     char* name = (char*)malloc(sizeof(char)), * supplier = (char*)malloc(sizeof(char));
+
     printf("Input name: ");
-    scanf("%s", name);
+    getline(&name, &size, stdin); //dummy
+    name = getString();
+
     if (CtrlDeleteItem(ui->controller, name) == 0)
         printf("Item not found!\n");
     printf("Item deleted!\n");
@@ -110,14 +119,17 @@ void uiUpdateMaterials(Console* ui)
     Gets input from the user and validates, then sends the info to the controller
         to update the material.
     */
+    size_t size
     char* name = (char*)malloc(sizeof(char)), * supplier = (char*)malloc(sizeof(char));
     int qty;
     int* date = (int*)malloc(sizeof(int));
+
     printf("Input name: ");
-    scanf("%s", name);
+    getline(&name, &size, stdin); //dummy
+    name = getString();
 
     printf("Input supplier: ");
-    scanf("%s", supplier);
+    supplier = getString();
 
     printf("Input expiration date (dd.mm.yyyy): ");
     date = getDateIntegers();
@@ -168,19 +180,6 @@ void uiGetExpired(Console* ui)
         printf("%s\n", expiredItems[i]);
         i++;
     }
-
-    // if (strcmp(needle, "-") != 0)
-    // {
-    //     expiredItems = CtrlExpiredMaterialsBySupplier(ui->controller, needle);
-    //     printf("\nExpired items for supplier containing string \"%s\":\n", needle);
-    //
-    //     i = 0;
-    //     while (strcmp(expiredItems[i], "") != 0)
-    //     {
-    //         printf("%s\n", expiredItems[i]);
-    //         i++;
-    //     }
-    // }
 }
 
 void uiGetExpiredByQty(Console* ui)
@@ -218,9 +217,10 @@ void uiGetShortOnSupply(Console* ui)
     material** shortItems;
 
 
-    printf("Input supplier (-d if you want descending):");
+    printf("Input supplier (-d if you want descending): ");
     getline(&supplier, &size, stdin);
-    chars = getline(&supplier, &size, stdin);
+    //chars = getline(&supplier, &size, stdin);
+    getline(&supplier, &size, stdin);
 
     printf("Input quantity: ");
     qty = getInteger();
@@ -260,7 +260,7 @@ void uiGetSupplierByExpMonth(Console* ui)
     material** shortItems;
 
 
-    printf("Input supplier (-a if you want ascending):");
+    printf("Input supplier (-a if you want ascending): ");
     getline(&supplier, &size, stdin);
     chars = getline(&supplier, &size, stdin);
 
@@ -287,6 +287,16 @@ void uiGetSupplierByExpMonth(Console* ui)
         printMaterial(shortItems[i]);
 }
 
+void uiUndo(Console* ui)
+{
+    undoOperation(ui->controller);
+}
+
+void uiRedo(Console* ui)
+{
+    redoOperation(ui->controller);
+}
+
 char* getCommand()
 {
     /*
@@ -305,8 +315,10 @@ int getInteger()
     */
     char* str = (char*)malloc(sizeof(char));
     scanf("%s", str);
+    if (strstr(str, " "))
+        return -1;
     int integer = atoi(str);
-    if (integer == 0)
+    if (integer <= 0)
         return -1;
     return integer;
 }
@@ -320,10 +332,18 @@ int* getDateIntegers()
     int* date = (int*)malloc(sizeof(int));
     scanf("%s", str);
 
+    if (strlen(str) != 10 || str[2] != '.' || str[5] != '.')
+    {
+        date[0] = -1;
+        date[1] = -1;
+        date[2] = -1;
+        return date;
+    }
+
     strcpy(temp, &str[0]);
 
     date[0] = atoi(temp);
-    if (date[0] == 0)
+    if (date[0] <= 0)
     {
         date[0] = -1;
         date[1] = -1;
@@ -334,7 +354,7 @@ int* getDateIntegers()
     strcpy(temp, &str[3]);
 
     date[1] = atoi(temp);
-    if (date[1] == 0)
+    if (date[1] <= 0)
     {
         date[0] = -1;
         date[1] = -1;
@@ -344,7 +364,7 @@ int* getDateIntegers()
 
     strcpy(temp, &str[6]);
     date[2] = atoi(temp);
-    if (date[1] == 0)
+    if (date[1] <= 0)
     {
         date[0] = -1;
         date[1] = -1;
@@ -353,6 +373,18 @@ int* getDateIntegers()
     }
 
     return date;
+}
+
+char* getString()
+{
+    /*
+    Function which gets a string with getline and strips \n.
+    */
+    size_t size = 32;
+    char* str = (char*)malloc(size * sizeof(char));
+    getline(&str, &size, stdin);
+    str[strlen(str) - 1] = '\0';
+    return str;
 }
 
 int validateCommand(Console* ui, char* command)
@@ -404,6 +436,8 @@ void loop(Console* ui)
           if (command == 5) uiGetExpiredByQty(ui);
           if (command == 6) uiGetShortOnSupply(ui);
           if (command == 7) uiGetSupplierByExpMonth(ui);
+          if (command == 8) uiUndo(ui);
+          if (command == 9) uiRedo(ui);
         }
     }
 }

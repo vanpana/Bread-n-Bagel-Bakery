@@ -91,6 +91,7 @@ int delItem(Repository* r, char* name)
     if (materialposition == -1)
             return 0;
 
+    destroyMaterial(r->items[materialposition]);
     for (int i = materialposition; i < r->length - 1; i++)
         r->items[i] = r->items[i+1];
 

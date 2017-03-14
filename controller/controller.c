@@ -12,8 +12,13 @@ Controller* createController(Repository* r)
     /*
     Constructor for controller struct.
     */
+
     Controller* c = (Controller*)malloc(sizeof(Controller));
     c->repository = r;
+
+    c->backupSize = 0;
+    c->backupPos = 0;
+    c->backup = (Repository*)malloc(100 * sizeof(Repository));
 
     return c;
 }
@@ -42,6 +47,7 @@ void CtrlAddItem(Controller* c, char* name, char* supplier, int day, int month,
     Creates material and sends to repository.
     */
     material* m = createMaterial(name, supplier, day, month, year, qty);
+    addToUndoList(c);
     addItem(c->repository, m);
 }
 
@@ -51,6 +57,7 @@ int CtrlDeleteItem(Controller* c, char* name)
     Sends the delete command to repository.
     return: 1 if passed, 0 if failed
     */
+    addToUndoList(c);
     return delItem(c->repository, name);
 }
 
@@ -62,6 +69,7 @@ int CtrlUpdateItem(Controller* c, char* name, char* supplier, int day, int month
     return: 1 if passed, 0 if failed
     */
     material* m = createMaterial(name, supplier, day, month, year, qty);
+    addToUndoList(c);
     return updateItem(c->repository, m);
 }
 
@@ -266,4 +274,34 @@ Repository* CtrlGetRepository(Controller* c)
     Returns current repository.
     */
     return c->repository;
+}
+
+void addToUndoList(Controller* c)
+{
+    if (c->backupPos != c->backupSize - 1)
+        for (int i = c->backupPos + 1; i < c->backupSize; i++)
+            destroyRepository(&c->backup[i]);
+
+    c->backup[c->backupPos] = *c->repository;
+    c->backupPos++;
+    c->backupSize = c->backupPos + 1;
+    printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
+
+
+}
+
+void undoOperation(Controller* c)
+{
+    //check if last elements
+    c->backupPos--;
+    c->repository = &c->backup[c->backupPos];
+    printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
+}
+
+void redoOperation(Controller* c)
+{
+    //check if nothing to redo
+    c->repository = &c->backup[c->backupPos++];
+    printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
+    //c->backupPos++;
 }

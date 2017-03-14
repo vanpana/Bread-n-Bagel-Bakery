@@ -4,6 +4,11 @@
 typedef struct
 {
   Repository* repository;
+  Repository* backup;
+  int backupSize, backupPos;
+
+
+
 }Controller;
 
 typedef int (*compfn)(const void*, const void*);
@@ -21,3 +26,6 @@ char** CtrlExpiredMaterialsByQty(Controller* c, int qty);
 material** CtrlShortOnSupply(Controller* c, char* supplier, int qty, int descending);
 material** CtrlGetSupplierByExpMonth(Controller* c, char* supplier, int descending);
 Repository* CtrlGetRepository(Controller* c);
+void addToUndoList(Controller* c);
+void undoOperation(Controller* c);
+void redoOperation(Controller* c);
