@@ -25,6 +25,7 @@ char** CtrlExpiredMaterialsBySupplier(Controller* c, char* needle);
 char** CtrlExpiredMaterialsByQty(Controller* c, int qty);
 material** CtrlShortOnSupply(Controller* c, char* supplier, int qty, int descending);
 material** CtrlGetSupplierByExpMonth(Controller* c, char* supplier, int descending);
+material** CtrlGetSupplierDescending(Controller* c, char* name, int descending);
 Repository* CtrlGetRepository(Controller* c);
 void addToUndoList(Controller* c);
 void undoOperation(Controller* c);

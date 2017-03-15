@@ -17,6 +17,7 @@ void uiGetExpired(Console* ui);
 void uiGetExpiredByQty(Console* ui);
 void uiGetShortOnSupply(Console* ui);
 void uiGetSupplierByExpMonth(Console* ui);
+void uiGetSupplierDescending(Console* ui);
 void uiUndo(Console* ui);
 void uiRedo(Console* ui);
 char* getCommand();

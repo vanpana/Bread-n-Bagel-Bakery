@@ -17,7 +17,7 @@ Controller* createController(Repository* r)
     c->repository = r;
 
     c->backupSize = 0;
-    c->backupPos = 0;
+    c->backupPos = -1;
     c->backup = (Repository*)malloc(100 * sizeof(Repository));
 
     return c;
@@ -118,6 +118,8 @@ char** CtrlExpiredMaterialsByName(Controller* c, char* needle)
 
 char** CtrlExpiredMaterialsBySupplier(Controller* c, char* needle)
 {
+    //needs function pointers
+
     /*
     Returns a list of materials expired with a specified string from a supplier.
     input: needle - string
@@ -268,6 +270,37 @@ material** CtrlGetSupplierByExpMonth(Controller* c, char* supplier, int descendi
     return shortItems;
 }
 
+material** CtrlGetSupplierDescending(Controller* c, char* name, int descending)
+{
+    material** items = (material**)malloc(10 * sizeof(material*));
+    int i, j;
+    for (j = 0; j < 10; j++)
+        items[j] = (material*)malloc(sizeof(material));
+
+    int counter = 0;
+
+    Repository* r = c->repository;
+    for (int i = 0; i < r->length; i++)
+    {
+        if (strstr(r->items[i]->name, name) != NULL)
+        {
+            items[counter] = r->items[i];
+            counter++;
+            if (counter%10 == 0)
+            {
+                items = (material**)realloc(items, (counter + 10) * sizeof(material*));
+                for (j = counter + 1; j < counter + 10; j++)
+                    items[j] = (material*)malloc(sizeof(material));
+            }
+        }
+    }
+
+    sortBySupl(items, counter, 1);
+    items[counter] = createMaterial("-1","",0,0,0,0);
+
+    return items;
+}
+
 Repository* CtrlGetRepository(Controller* c)
 {
     /*
@@ -278,13 +311,13 @@ Repository* CtrlGetRepository(Controller* c)
 
 void addToUndoList(Controller* c)
 {
-    if (c->backupPos != c->backupSize - 1)
-        for (int i = c->backupPos + 1; i < c->backupSize; i++)
-            destroyRepository(&c->backup[i]);
+    // c->backupSize = 0;
+    // c->backupPos = -1;
 
-    c->backup[c->backupPos] = *c->repository;
+    c->backupSize++;
     c->backupPos++;
-    c->backupSize = c->backupPos + 1;
+    c->backup[c->backupPos] = *CtrlGetRepository(c);
+
     printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
 
 
@@ -293,15 +326,17 @@ void addToUndoList(Controller* c)
 void undoOperation(Controller* c)
 {
     //check if last elements
-    c->backupPos--;
+
     c->repository = &c->backup[c->backupPos];
+    c->backupPos--;
     printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
 }
 
 void redoOperation(Controller* c)
 {
     //check if nothing to redo
-    c->repository = &c->backup[c->backupPos++];
+    c->backupPos++;
+    c->repository = &c->backup[c->backupPos];
     printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
     //c->backupPos++;
 }

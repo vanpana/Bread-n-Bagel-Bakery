@@ -31,7 +31,8 @@ void printMenu()
     printf("4. Search expired items.\n");
     printf("5. Search expired items past some quantity.\n");
     printf("6. Search short on supply materials by supplier.\n");
-    printf("7 (activity). See all materials from supplier sorted by expiration month.\n");
+    printf("7 (bad activity). See all materials from supplier sorted by expiration month.\n");
+    printf("activity. See all materials with a name sorted by supplier.\n");
     printf("8. Undo\n");
     printf("9. Redo\n");
     printf("print. Print all items.\n");
@@ -119,7 +120,7 @@ void uiUpdateMaterials(Console* ui)
     Gets input from the user and validates, then sends the info to the controller
         to update the material.
     */
-    size_t size
+    size_t size;
     char* name = (char*)malloc(sizeof(char)), * supplier = (char*)malloc(sizeof(char));
     int qty;
     int* date = (int*)malloc(sizeof(int));
@@ -166,7 +167,6 @@ void uiGetExpired(Console* ui)
 
     printf("Input searched string: ");
     scanf("%s", needle); // "-" is for no needle
-    // fgets(needle, 200, stdin);
 
     char** expiredItems = CtrlExpiredMaterialsByName(ui->controller, needle);
 
@@ -287,6 +287,22 @@ void uiGetSupplierByExpMonth(Console* ui)
         printMaterial(shortItems[i]);
 }
 
+
+void uiGetSupplierDescending(Console* ui)
+{
+    size_t size;
+    material** items;
+    char* name = (char*)malloc(sizeof(char));
+
+    printf("Input name: ");
+    getline(&name, &size, stdin); //dummy
+    name = getString();
+    items = CtrlGetSupplierDescending(ui->controller, name, 1);
+
+    for (int i = 0; items[i]->name[0] != '-'; i++)
+        printMaterial(items[i]);
+}
+
 void uiUndo(Console* ui)
 {
     undoOperation(ui->controller);
@@ -394,17 +410,17 @@ int validateCommand(Console* ui, char* command)
     */
     if (strlen(command) > 1)
     {
-    if (strcmp(command, "exit") != 0 && strcmp(command, "print") != 0)
-      return 0;
+        if (strcmp(command, "exit") != 0 && strcmp(command, "print") != 0 && strcmp(command, "activity") != 0)
+          return 0;
 
-    return 2; //is string
+        return 2; //is string
     }
     else
     {
-    for (int i = 1; i <= 9; i++)
-      if ((int)command[0] - '0'== i)
-        return 1;
-    return 0;
+        for (int i = 1; i <= 70; i++)
+          if ((int)command[0] - '0'== i)
+            return 1;
+        return 0;
     }
 }
 
@@ -421,9 +437,11 @@ void loop(Console* ui)
           printf("Invalid command\n");
         else if (validateCommand(ui, cmd) == 2)
         {
-          if (strcmp(cmd, "exit") == 0)
-            break;
-          else uiListAllMaterials(ui);
+            if (strcmp(cmd, "exit") == 0)
+                break;
+            else if (strcmp(cmd, "print") == 0)
+                uiListAllMaterials(ui);
+            else uiGetSupplierDescending(ui);
         }
         else
         {

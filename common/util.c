@@ -32,19 +32,19 @@ int validateDate(int day, int month, int year)
 
 int getNumberMonth(char* month)
 {
-    if (strcpy(month, "Jan")) return 1;
-    if (strcpy(month, "Feb")) return 2;
-    if (strcpy(month, "Mar")) return 3;
-    if (strcpy(month, "Apr")) return 4;
-    if (strcpy(month, "May")) return 5;
-    if (strcpy(month, "Jun")) return 6;
-    if (strcpy(month, "July")) return 7;
+    if (strcmp(month, "Jan") == 0) return 1;
+    if (strcmp(month, "Feb") == 0) return 2;
+    if (strcmp(month, "Mar") == 0) return 3;
+    if (strcmp(month, "Apr") == 0) return 4;
+    if (strcmp(month, "May") == 0) return 5;
+    if (strcmp(month, "Jun") == 0) return 6;
+    if (strcmp(month, "July") == 0) return 7;
 
-    if (strcpy(month, "Aug")) return 8;
-    if (strcpy(month, "Sep")) return 9;
-    if (strcpy(month, "Oct")) return 10;
-    if (strcpy(month, "Nov")) return 11;
-    if (strcpy(month, "Dec")) return 12;
+    if (strcmp(month, "Aug") == 0) return 8;
+    if (strcmp(month, "Sep") == 0) return 9;
+    if (strcmp(month, "Oct") == 0) return 10;
+    if (strcmp(month, "Nov") == 0) return 11;
+    if (strcmp(month, "Dec") == 0) return 12;
     return 0;
 }
 
@@ -127,6 +127,28 @@ void sortByExpMonth(material** items, int size, int desc)
                 items[j] = aux;
             }
             else if (desc == 1 && items[i]->month < items[j]->month)
+            {
+                material* aux = items[i];
+                items[i] = items[j];
+                items[j] = aux;
+            }
+        }
+}
+
+void sortBySupl(material** items, int size, int desc)
+{
+    for (int i = 0; i < size-1; i++)
+        for (int j = i+1; j < size; j++)
+        {
+            //printf("%s VS %s: %s\n", items[i]->supplier, items[j]->supplier, strstr(items[i]->supplier, items[j]->supplier));
+            if (desc == 0 && strcmp(items[i]->supplier, items[j]->supplier) < 0)
+            {
+
+                material* aux = items[i];
+                items[i] = items[j];
+                items[j] = aux;
+            }
+            else if (desc == 1 && strcmp(items[i]->supplier, items[j]->supplier) < 0)
             {
                 material* aux = items[i];
                 items[i] = items[j];
