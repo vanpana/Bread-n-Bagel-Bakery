@@ -28,5 +28,5 @@ material** CtrlGetSupplierByExpMonth(Controller* c, char* supplier, int descendi
 material** CtrlGetSupplierDescending(Controller* c, char* name, int descending);
 Repository* CtrlGetRepository(Controller* c);
 void addToUndoList(Controller* c);
-void undoOperation(Controller* c);
-void redoOperation(Controller* c);
+int undoOperation(Controller* c);
+int redoOperation(Controller* c);

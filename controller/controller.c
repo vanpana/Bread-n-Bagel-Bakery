@@ -47,8 +47,8 @@ void CtrlAddItem(Controller* c, char* name, char* supplier, int day, int month,
     Creates material and sends to repository.
     */
     material* m = createMaterial(name, supplier, day, month, year, qty);
-    addToUndoList(c);
     addItem(c->repository, m);
+    addToUndoList(c);
 }
 
 int CtrlDeleteItem(Controller* c, char* name)
@@ -57,8 +57,8 @@ int CtrlDeleteItem(Controller* c, char* name)
     Sends the delete command to repository.
     return: 1 if passed, 0 if failed
     */
-    addToUndoList(c);
     return delItem(c->repository, name);
+    addToUndoList(c);
 }
 
 int CtrlUpdateItem(Controller* c, char* name, char* supplier, int day, int month,
@@ -69,8 +69,8 @@ int CtrlUpdateItem(Controller* c, char* name, char* supplier, int day, int month
     return: 1 if passed, 0 if failed
     */
     material* m = createMaterial(name, supplier, day, month, year, qty);
-    addToUndoList(c);
     return updateItem(c->repository, m);
+    addToUndoList(c);
 }
 
 char** CtrlExpiredMaterialsByName(Controller* c, char* needle)
@@ -315,28 +315,23 @@ void addToUndoList(Controller* c)
     // c->backupPos = -1;
 
     c->backupSize++;
-    c->backupPos++;
-    c->backup[c->backupPos] = *CtrlGetRepository(c);
+    c->backup[++c->backupPos] = *CtrlGetRepository(c);
+}
 
-    printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
+int undoOperation(Controller* c)
+{
+    if (c->backupPos == -1)
+        return 0;
 
+    c->repository = &c->backup[--c->backupPos];
+    return 1;
 
 }
 
-void undoOperation(Controller* c)
+int redoOperation(Controller* c)
 {
-    //check if last elements
-
-    c->repository = &c->backup[c->backupPos];
-    c->backupPos--;
-    printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
-}
-
-void redoOperation(Controller* c)
-{
-    //check if nothing to redo
-    c->backupPos++;
-    c->repository = &c->backup[c->backupPos];
-    printf("pos: %d, size: %d\n", c->backupPos, c->backupSize);
-    //c->backupPos++;
+    if (c->backupPos == c->backupSize - 1)
+        return 0;
+    c->repository = &c->backup[++c->backupPos];
+    return 1;
 }

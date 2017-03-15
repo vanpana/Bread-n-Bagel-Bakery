@@ -305,12 +305,14 @@ void uiGetSupplierDescending(Console* ui)
 
 void uiUndo(Console* ui)
 {
-    undoOperation(ui->controller);
+    if (undoOperation(ui->controller) == 0)
+        printf("Nothing to undo!\n");
 }
 
 void uiRedo(Console* ui)
 {
-    redoOperation(ui->controller);
+    if (redoOperation(ui->controller) == 0)
+        printf("Nothing to redo!\n");
 }
 
 char* getCommand()
