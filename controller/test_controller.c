@@ -48,29 +48,29 @@ void test_CtrlUpdateItem()
 //     assert(i == 1);
 // }
 
-void test_CtrlExpiredMaterialsBySupplier()
-{
-    Controller* c = initController();
-    char** expiredItems = CtrlExpiredMaterialsBySupplier(c, "q");
+// void test_CtrlExpiredMaterialsBySupplier()
+// {
+//     Controller* c = initController();
+//     char** expiredItems = CtrlExpiredMaterialsBySupplier(c, "q");
+//
+//     int i = 0;
+//     while (strcmp(expiredItems[i], "") != 0)
+//         i++;
+//
+//     assert(i == 1);
+// }
 
-    int i = 0;
-    while (strcmp(expiredItems[i], "") != 0)
-        i++;
-
-    assert(i == 1);
-}
-
-void test_CtrlExpiredMaterialsByQty()
-{
-    Controller* c = initController();
-    char** expiredItems = CtrlExpiredMaterialsByQty(c, 1);
-
-    int i = 0;
-    while (strcmp(expiredItems[i], "") != 0)
-        i++;
-
-    assert(i == 1);
-}
+// void test_CtrlExpiredMaterialsByQty()
+// {
+//     Controller* c = initController();
+//     char** expiredItems = CtrlExpiredMaterialsByQty(c, 1);
+//
+//     int i = 0;
+//     while (strcmp(expiredItems[i], "") != 0)
+//         i++;
+//
+//     assert(i == 1);
+// }
 
 // void test_CtrlShortOnSupply()
 // {
@@ -90,7 +90,7 @@ void runCtrlTests()
     test_CtrlAddItem();
     test_CtrlUpdateItem();
     // test_CtrlExpiredMaterialsByName();
-    test_CtrlExpiredMaterialsBySupplier();
-    test_CtrlExpiredMaterialsByQty();
+    // test_CtrlExpiredMaterialsBySupplier();
+    // test_CtrlExpiredMaterialsByQty();
     // test_CtrlShortOnSupply();
 }

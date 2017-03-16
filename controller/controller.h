@@ -20,10 +20,7 @@ void CtrlAddItem(Controller* c, char* name, char* supplier, int day, int month,
 int CtrlDeleteItem(Controller* c, char* name);
 int CtrlUpdateItem(Controller* c, char* name, char* supplier, int day, int month,
    int year, int qty);
-char** CtrlExpiredMaterialsBySupplier(Controller* c, char* needle);
-char** CtrlExpiredMaterialsByQty(Controller* c, int qty);
 material** CtrlSort(Controller* c, char* name, char* supplier, int qty, int desc);
-material** CtrlGetSupplierByExpMonth(Controller* c, char* supplier, int descending);
 Repository* CtrlGetRepository(Controller* c);
 void addToUndoList(Controller* c);
 int undoOperation(Controller* c);
