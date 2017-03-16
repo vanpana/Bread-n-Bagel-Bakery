@@ -157,6 +157,44 @@ void sortBySupl(material** items, int size, int desc)
         }
 }
 
+material** sortGen(material** container, int size, int desc, int (*compar)(material*, material*))
+{
+    for (int i = 0; i < size - 1; i++)
+        for (int j = i+1; j < size; j++)
+            if (compar(container[i], container[j]) > 1 && desc == 0)
+            {
+                material* aux = container[i];
+                container[i] = container[j];
+                container[j] = aux;
+            }
+            else if (compar(container[i], container[j]) < 1 && desc == 1)
+            {
+                material* aux = container[i];
+                container[i] = container[j];
+                container[j] = aux;
+            }
+    return container;
+}
+
+int sortByNameGen(material* a, material*b)
+{
+    return strcmp(a->name, b->name);
+}
+
+int sortBySuplGen(material* a, material*b)
+{
+    return strcmp(a->supplier, b->supplier);
+}
+
+int sortByQtyGen(material* a, material*b)
+{
+    if (a->qty > b->qty)
+        return 1;
+    else if (a->qty == b->qty)
+        return 0;
+    return -1;
+}
+
 void runAllTests()
 {
     runRepoTests();

@@ -231,7 +231,8 @@ void uiGetShortOnSupply(Console* ui)
         if (strstr(supplier, "-") != NULL)
             printf("Invalid Command");
         else
-            shortItems = CtrlShortOnSupply(ui->controller, supplier, qty, 0);
+            // shortItems = CtrlShortOnSupply(ui->controller, supplier, qty, 0);
+            shortItems = CtrlSort(ui->controller, "", supplier, qty, 0);
     }
     else
     {
@@ -240,7 +241,8 @@ void uiGetShortOnSupply(Console* ui)
         else
             supplier[strlen(supplier) - 2] = '\0';
 
-        shortItems = CtrlShortOnSupply(ui->controller, supplier, qty, 1);
+        // shortItems = CtrlShortOnSupply(ui->controller, supplier, qty, 1);
+        shortItems = CtrlSort(ui->controller, "", supplier, qty, 1);
     }
 
 

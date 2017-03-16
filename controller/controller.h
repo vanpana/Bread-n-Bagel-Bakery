@@ -23,6 +23,7 @@ int CtrlUpdateItem(Controller* c, char* name, char* supplier, int day, int month
 char** CtrlExpiredMaterialsByName(Controller* c, char* needle);
 char** CtrlExpiredMaterialsBySupplier(Controller* c, char* needle);
 char** CtrlExpiredMaterialsByQty(Controller* c, int qty);
+material** CtrlSort(Controller* c, char* name, char* supplier, int qty, int desc);
 material** CtrlShortOnSupply(Controller* c, char* supplier, int qty, int descending);
 material** CtrlGetSupplierByExpMonth(Controller* c, char* supplier, int descending);
 material** CtrlGetSupplierDescending(Controller* c, char* name, int descending);

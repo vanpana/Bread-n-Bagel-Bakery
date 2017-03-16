@@ -73,6 +73,143 @@ int CtrlUpdateItem(Controller* c, char* name, char* supplier, int day, int month
     addToUndoList(c);
 }
 
+material** CtrlSort(Controller* c, char* name, char* supplier, int qty, int desc)
+{
+    /*
+    Returns a sorted list.
+    If name is not empty, it will return a list with sorted items containing name.
+    If name is not empty and supplier is not empty, it will return a list with sorted items containing name from a supplier.
+    If name is not empty and qty is not empty, it will return a list with sorted items with quantity greater than qty.
+    if name, supplier and qty are not empty, it will return a list with sorted items from a supplier with a quantity greatea than qty.
+
+    If supplier is not empty, it will return a list with items sorted by name with given supplier.
+    If supplier, qty are not empty, it will return a list with items short on supply from the given supplier.
+
+    If qty is not empty, it will return a list with items sorted by quantity greater than input quantity.
+    */
+    material** items = (material**)malloc(10 * sizeof(material*));
+    int j, counter = 0;;
+    for (j = 0; j < 10; j++)
+        items[j] = (material*)malloc(sizeof(material));
+    Repository* r = CtrlGetRepository(c);
+    if (strlen(name) != 0)
+    {
+        if (strlen(supplier) == 0 && qty == 0)
+        //sort by items containing the name
+        {
+            for (int i = 0; i < r->length; i++)
+                if (strstr(r->items[i]->name, name) != NULL)
+                {
+                    items[counter] = r->items[i];
+                    counter++;
+                    if (counter%10 == 0)
+                    {
+                        items = (material**)realloc(items, (counter + 10) * sizeof(material*));
+                        for (j = counter + 1; j < counter + 10; j++)
+                            items[j] = (material*)malloc(sizeof(material));
+                    }
+                }
+            sortGen(items, counter, desc, sortByNameGen);
+        }
+        if (strlen(supplier) != 0 && qty == 0)
+            //sort by name from supplier
+        {
+            for (int i = 0; i < r->length; i++)
+                if (strstr(r->items[i]->name, name) != NULL && strstr(r->items[i]->supplier, supplier) != NULL)
+                {
+                    items[counter] = r->items[i];
+                    counter++;
+                    if (counter%10 == 0)
+                    {
+                        items = (material**)realloc(items, (counter + 10) * sizeof(material*));
+                        for (j = counter + 1; j < counter + 10; j++)
+                            items[j] = (material*)malloc(sizeof(material));
+                    }
+                }
+            sortGen(items, counter, desc, sortByNameGen);
+        }
+        if (strlen(supplier) != 0 && qty > 0)
+            //sort by name from supl with quantity > qty
+        {
+            for (int i = 0; i < r->length; i++)
+                if (strstr(r->items[i]->name, name) != NULL && strstr(r->items[i]->supplier, supplier) != NULL && r->items[i]->qty > qty)
+                {
+                    items[counter] = r->items[i];
+                    counter++;
+                    if (counter%10 == 0)
+                    {
+                        items = (material**)realloc(items, (counter + 10) * sizeof(material*));
+                        for (j = counter + 1; j < counter + 10; j++)
+                            items[j] = (material*)malloc(sizeof(material));
+                    }
+                }
+            sortGen(items, counter, desc, sortByQtyGen);
+        }
+    }
+
+    else if (strlen(supplier) != 0)
+    {
+        if (qty == 0)
+            //sort by name from supplier
+        {
+            for (int i = 0; i < r->length; i++)
+                if (strstr(r->items[i]->supplier, supplier) != NULL)
+                {
+                    items[counter] = r->items[i];
+                    counter++;
+                    if (counter%10 == 0)
+                    {
+                        items = (material**)realloc(items, (counter + 10) * sizeof(material*));
+                        for (j = counter + 1; j < counter + 10; j++)
+                            items[j] = (material*)malloc(sizeof(material));
+                    }
+                }
+            sortGen(items, counter, desc, sortByNameGen);
+        }
+        if (qty > 0)
+            //sort by short on supply
+        {
+            for (int i = 0; i < r->length; i++)
+                if (strstr(r->items[i]->supplier, supplier) != NULL && r->items[i]->qty <= qty)
+                {
+                    items[counter] = r->items[i];
+                    counter++;
+                    if (counter%10 == 0)
+                    {
+                        items = (material**)realloc(items, (counter + 10) * sizeof(material*));
+                        for (j = counter + 1; j < counter + 10; j++)
+                            items[j] = (material*)malloc(sizeof(material));
+                    }
+                }
+
+            sortGen(items, counter, desc, sortByQtyGen);
+        }
+    }
+
+    else if (qty > 0)
+        //sort items by quantity > qty
+    {
+        for (int i = 0; i < r->length; i++)
+            if (r->items[i]->qty > qty)
+            {
+
+                items[counter] = r->items[i];
+                counter++;
+                if (counter%10 == 0)
+                {
+                    items = (material**)realloc(items, (counter + 10) * sizeof(material*));
+                    for (j = counter + 1; j < counter + 10; j++)
+                        items[j] = (material*)malloc(sizeof(material));
+                }
+            }
+        sortGen(items, counter, desc, sortByQtyGen);
+    }
+
+    items[counter] = createMaterial("","",0,0,0,0);
+
+    return items;
+}
+
 char** CtrlExpiredMaterialsByName(Controller* c, char* needle)
 {
     /*
