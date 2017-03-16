@@ -12,4 +12,5 @@ material** sortGen(material** container, int size, int desc, int (*compar)(mater
 int sortByNameGen(material* a, material*b);
 int sortBySuplGen(material* a, material*b);
 int sortByQtyGen(material* a, material*b);
+int sortByExpDateGen(material* a, material* b);
 void runAllTests();

@@ -36,17 +36,17 @@ void test_CtrlUpdateItem()
     assert(strcmp(getSupplier(c->repository->items[0]), "Aquz Carpatica") == 0);
 }
 
-void test_CtrlExpiredMaterialsByName()
-{
-    Controller* c = initController();
-    char** expiredItems = CtrlExpiredMaterialsByName(c, "Water");
-
-    int i = 0;
-    while (strcmp(expiredItems[i], "") != 0)
-        i++;
-
-    assert(i == 1);
-}
+// void test_CtrlExpiredMaterialsByName()
+// {
+//     Controller* c = initController();
+//     char** expiredItems = CtrlExpiredMaterialsByName(c, "Water");
+//
+//     int i = 0;
+//     while (strcmp(expiredItems[i], "") != 0)
+//         i++;
+//
+//     assert(i == 1);
+// }
 
 void test_CtrlExpiredMaterialsBySupplier()
 {
@@ -72,25 +72,25 @@ void test_CtrlExpiredMaterialsByQty()
     assert(i == 1);
 }
 
-void test_CtrlShortOnSupply()
-{
-    Controller* c = initController();
-    material** shortItems = CtrlShortOnSupply(c, "Aqua Carpatica", 1024, 0);
-
-    int i = 0;
-    for (i = 0; strcmp(shortItems[i]->name, "") != 0; i++)
-        i = i;
-
-    assert(i == 1);
-}
+// void test_CtrlShortOnSupply()
+// {
+//     Controller* c = initController();
+//     material** shortItems = CtrlShortOnSupply(c, "Aqua Carpatica", 1024, 0);
+//
+//     int i = 0;
+//     for (i = 0; strcmp(shortItems[i]->name, "") != 0; i++)
+//         i = i;
+//
+//     assert(i == 1);
+// }
 
 void runCtrlTests()
 {
     test_CtrlGetLength();
     test_CtrlAddItem();
     test_CtrlUpdateItem();
-    test_CtrlExpiredMaterialsByName();
+    // test_CtrlExpiredMaterialsByName();
     test_CtrlExpiredMaterialsBySupplier();
     test_CtrlExpiredMaterialsByQty();
-    test_CtrlShortOnSupply();
+    // test_CtrlShortOnSupply();
 }

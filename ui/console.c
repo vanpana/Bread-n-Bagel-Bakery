@@ -165,21 +165,24 @@ void uiGetExpired(Console* ui)
     */
     char* needle = (char*)malloc(sizeof(char));
 
-    printf("Input searched string: ");
+    printf("Input searched string (- for every entry): ");
     scanf("%s", needle); // "-" is for no needle
 
-    char** expiredItems = CtrlExpiredMaterialsByName(ui->controller, needle);
+    material** expiredItems;
 
     if (strcmp(needle, "-") != 0)
-        printf("\nExpired items containing string \"%s\":\n", needle);
-    else printf("\nAll expired items: \n");
-
-    int i = 0;
-    while (strcmp(expiredItems[i], "") != 0)
     {
-        printf("%s\n", expiredItems[i]);
-        i++;
+        printf("\nExpired items containing string \"%s\":\n", needle);
+        expiredItems = CtrlSort(ui->controller, needle, "", -1, 0);
     }
+    else
+    {
+        printf("\nAll expired items: \n");
+        expiredItems = CtrlSort(ui->controller, "", "", -1, 0);
+    }
+
+    for (int i = 0; strcmp(expiredItems[i]->name, "") != 0; i++)
+        printMaterial(expiredItems[i]);
 }
 
 void uiGetExpiredByQty(Console* ui)
@@ -194,14 +197,10 @@ void uiGetExpiredByQty(Console* ui)
     qty = getInteger();
 
     printf("\nExpired items past quantity %d:\n", qty);
-    char** expiredItems = CtrlExpiredMaterialsByQty(ui->controller, qty);
+    material** expiredItems = CtrlSort(ui->controller, "", "", qty, 0);
 
-    int i = 0;
-    while (strcmp(expiredItems[i], "") != 0)
-    {
-        printf("%s\n", expiredItems[i]);
-        i++;
-    }
+    for (int i = 0; strcmp(expiredItems[i]->name, "") != 0; i++)
+        printMaterial(expiredItems[i]);
 }
 
 void uiGetShortOnSupply(Console* ui)
@@ -272,7 +271,8 @@ void uiGetSupplierByExpMonth(Console* ui)
         if (strstr(supplier, "-") != NULL)
             printf("Invalid Command");
         else
-            shortItems = CtrlGetSupplierByExpMonth(ui->controller, supplier, 1);
+            shortItems = CtrlSort(ui->controller, "", supplier, 0, 0);
+            // shortItems = CtrlGetSupplierByExpMonth(ui->controller, supplier, 1);
     }
     else
     {
@@ -281,7 +281,8 @@ void uiGetSupplierByExpMonth(Console* ui)
         else
             supplier[strlen(supplier) - 2] = '\0';
 
-        shortItems = CtrlGetSupplierByExpMonth(ui->controller, supplier, 0);
+        shortItems = CtrlSort(ui->controller, "", supplier, 0, 1);
+        // shortItems = CtrlGetSupplierByExpMonth(ui->controller, supplier, 0);
     }
 
 
@@ -299,9 +300,10 @@ void uiGetSupplierDescending(Console* ui)
     printf("Input name: ");
     getline(&name, &size, stdin); //dummy
     name = getString();
-    items = CtrlGetSupplierDescending(ui->controller, name, 1);
+    items = CtrlSort(ui->controller, name, "", 0, 1);
+    // items = CtrlGetSupplierDescending(ui->controller, name, 1);
 
-    for (int i = 0; items[i]->name[0] != '-'; i++)
+    for (int i = 0; strcmp(items[i]->name, "") != 0; i++)
         printMaterial(items[i]);
 }
 

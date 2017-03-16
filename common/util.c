@@ -140,7 +140,6 @@ void sortBySupl(material** items, int size, int desc)
     for (int i = 0; i < size-1; i++)
         for (int j = i+1; j < size; j++)
         {
-            //printf("%s VS %s: %s\n", items[i]->supplier, items[j]->supplier, strstr(items[i]->supplier, items[j]->supplier));
             if (desc == 0 && strcmp(items[i]->supplier, items[j]->supplier) < 0)
             {
 
@@ -161,14 +160,15 @@ material** sortGen(material** container, int size, int desc, int (*compar)(mater
 {
     for (int i = 0; i < size - 1; i++)
         for (int j = i+1; j < size; j++)
-            if (compar(container[i], container[j]) > 1 && desc == 0)
+            if (compar(container[i], container[j]) == 1 && desc == 0)
             {
                 material* aux = container[i];
                 container[i] = container[j];
                 container[j] = aux;
             }
-            else if (compar(container[i], container[j]) < 1 && desc == 1)
+            else if (compar(container[i], container[j]) == -1 && desc == 1)
             {
+
                 material* aux = container[i];
                 container[i] = container[j];
                 container[j] = aux;
@@ -178,12 +178,20 @@ material** sortGen(material** container, int size, int desc, int (*compar)(mater
 
 int sortByNameGen(material* a, material*b)
 {
-    return strcmp(a->name, b->name);
+    if (strcmp(a->name, b->name) < 0)
+        return -1;
+    else if (strcmp(a->name, b->name) == 0)
+        return 0;
+    return 1;
 }
 
 int sortBySuplGen(material* a, material*b)
 {
-    return strcmp(a->supplier, b->supplier);
+    if (strcmp(a->supplier, b->supplier) < 0)
+        return -1;
+    else if (strcmp(a->supplier, b->supplier) == 0)
+        return 0;
+    return 1;
 }
 
 int sortByQtyGen(material* a, material*b)
@@ -193,6 +201,29 @@ int sortByQtyGen(material* a, material*b)
     else if (a->qty == b->qty)
         return 0;
     return -1;
+}
+
+int sortByExpDateGen(material* a, material* b)
+{
+    if (a->year < b->year)
+        return 1;
+    else if (a->year > b->year)
+        return -1;
+    else if (a->year == b->year)
+    {
+        if (a->month < b->month)
+            return 1;
+        else if (a->month > b->month)
+            return -1;
+        else if (a->month == b->month)
+        {
+            if (a->day < b->day)
+                return 1;
+            else if (a->day > b->day)
+                return -1;
+        }
+    }
+    return 0;
 }
 
 void runAllTests()
