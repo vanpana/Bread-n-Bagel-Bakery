@@ -23,6 +23,8 @@ int main()
     CtrlAddItem(ctrl, "Cuib", "La casa", 14, 03, 2017, 10);
 
     Console* ui = createConsole(ctrl);
+
+    printf("Items added. Press enter to continue...");
     runApp(ui);
     printf("See you soon! :)\n\n");
     printf("\n---------------\n");

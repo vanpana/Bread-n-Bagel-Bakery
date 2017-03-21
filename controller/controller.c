@@ -19,6 +19,9 @@ Controller* createController(Repository* r)
     c->backupSize = 0;
     c->backupPos = -1;
     c->backup = (Repository*)malloc(100 * sizeof(Repository));
+    c->backupInstructions = (char**)malloc(100 * sizeof(char*));
+    for (int i = 0; i < 100; i++)
+        c->backupInstructions[i] = (char*)malloc(sizeof(char));
 
     return c;
 }
@@ -57,8 +60,14 @@ int CtrlDeleteItem(Controller* c, char* name)
     Sends the delete command to repository.
     return: 1 if passed, 0 if failed
     */
-    return delItem(c->repository, name);
-    addToUndoList(c);
+    if (getMaterialPosition(c->repository, name) != 1)
+    {
+        addToUndoList(c);
+        delItem(c->repository, name);
+        return 1;
+    }
+    return 0;
+
 }
 
 int CtrlUpdateItem(Controller* c, char* name, char* supplier, int day, int month,
@@ -69,8 +78,14 @@ int CtrlUpdateItem(Controller* c, char* name, char* supplier, int day, int month
     return: 1 if passed, 0 if failed
     */
     material* m = createMaterial(name, supplier, day, month, year, qty);
-    return updateItem(c->repository, m);
-    addToUndoList(c);
+
+    if (getMaterialPosition(c->repository, m->name) != 1)
+    {
+        addToUndoList(c);
+        updateItem(c->repository, m);
+        return 1;
+    }
+    return 0;
 }
 
 material** CtrlSort(Controller* c, char* name, char* supplier, int qty, int desc)
@@ -278,6 +293,7 @@ void addToUndoList(Controller* c)
 
     c->backupSize++;
     c->backup[++c->backupPos] = *CtrlGetRepository(c);
+    printf("%d, %d\n", c->backupPos, c->backupSize);
 }
 
 int undoOperation(Controller* c)
@@ -286,6 +302,7 @@ int undoOperation(Controller* c)
         return 0;
 
     c->repository = &c->backup[--c->backupPos];
+    printf("%d, %d\n", c->backupPos, c->backupSize);
     return 1;
 
 }
@@ -295,5 +312,48 @@ int redoOperation(Controller* c)
     if (c->backupPos == c->backupSize - 1)
         return 0;
     c->repository = &c->backup[++c->backupPos];
+    printf("%d, %d\n", c->backupPos, c->backupSize);
     return 1;
 }
+
+// void addToUndoList(Controller* c, int mode, material* m)
+// {
+//     // 1 = add, so it deletes the items (if exists, add to list a delete and add, if not, add a delete and NOTHING)
+//     // 2 = update, so it deletes the item and replaces with the previous one (add to list a delete and add)
+//     // 3 = delete, so it brings back the item (add an add and NOTHING)
+//     char* temp = (char*)malloc(sizeof(char));
+//     sprintf(temp, "%s,%s,%d,%d,%d,%d", m->name, m->supplier, itoa(m->day), itoa(m->month), itoa(m->year), itoa(m->qty));
+//
+//     if (getMaterialPosition(m->name) == -1 || mode == 3)
+//         strcpy(c->backupInstructions[backupPos+2], "Nothing");
+//     else
+//         // strcpy(c->backupInstructions[backupPos+2], m->name);
+//         strcpy(c->backupInstructions[backupPos+2], temp);
+//     strcpy(c->backupInstructions[backupPos+1], temp);
+//     backupPos += 2;
+//     backupSize += 2;
+// }
+//
+// int undoOperation(Controller* c)
+// {
+//     if (backupPos < 1)
+//         return 0;
+//     material* m = strToMaterial(backupInstructions[backupPos-1]);
+//     if (strcmp(backupInstructions[backupPos-1], "Nothing" != 0)
+//         delItem(c->repository, m->name);
+//     addItem(m);
+//     backupPos -=2;
+//     return 1;
+// }
+//
+// int redoOperation(Controller* c)
+// {
+//     if (backupPos > backupSize - 2)
+//         return 0;
+//     material* m = strToMaterial(backupInstructions[backupPos+1]);
+//     delItem(c->repository, m->name);
+//     if (strcmp(backupInstructions[backupPos+2], "Nothing" != 0)
+//         addItem(m);
+//     return 1;
+//
+// }

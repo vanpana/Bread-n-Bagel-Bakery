@@ -6,6 +6,7 @@ typedef struct
   Repository* repository;
   Repository* backup;
   int backupSize, backupPos;
+  char** backupInstructions;
 
 
 

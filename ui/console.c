@@ -66,7 +66,7 @@ void uiAddMaterials(Console* ui)
     int* date = (int*)malloc(sizeof(int));
 
     printf("Input name: ");
-    getline(&name, &size, stdin); //dummy
+    // getline(&name, &size, stdin); //dummy
     name = getString();
 
     printf("Input supplier: ");
@@ -106,7 +106,7 @@ void uiDeleteMaterials(Console* ui)
     char* name = (char*)malloc(sizeof(char)), * supplier = (char*)malloc(sizeof(char));
 
     printf("Input name: ");
-    getline(&name, &size, stdin); //dummy
+    // getline(&name, &size, stdin); //dummy
     name = getString();
 
     if (CtrlDeleteItem(ui->controller, name) == 0)
@@ -126,7 +126,7 @@ void uiUpdateMaterials(Console* ui)
     int* date = (int*)malloc(sizeof(int));
 
     printf("Input name: ");
-    getline(&name, &size, stdin); //dummy
+    // getline(&name, &size, stdin); //dummy
     name = getString();
 
     printf("Input supplier: ");
@@ -163,10 +163,11 @@ void uiGetExpired(Console* ui)
     Gets input from the user and validates, then sends the info to the controller
         to get the expired materials.
     */
-    char* needle = (char*)malloc(sizeof(char));
+    char* needle;
 
     printf("Input searched string (- for every entry): ");
-    scanf("%s", needle); // "-" is for no needle
+    // scanf("%s", needle); // "-" is for no needle
+    needle = getString();
 
     material** expiredItems;
 
@@ -217,7 +218,7 @@ void uiGetShortOnSupply(Console* ui)
 
 
     printf("Input supplier (-d if you want descending): ");
-    getline(&supplier, &size, stdin);
+    // getline(&supplier, &size, stdin); //dummy
     //chars = getline(&supplier, &size, stdin);
     getline(&supplier, &size, stdin);
 
@@ -262,7 +263,7 @@ void uiGetSupplierByExpMonth(Console* ui)
 
 
     printf("Input supplier (-a if you want ascending): ");
-    getline(&supplier, &size, stdin);
+    // getline(&supplier, &size, stdin); //dummy
     chars = getline(&supplier, &size, stdin);
 
     supplier[strlen(supplier) - 1] = '\0';
@@ -298,7 +299,7 @@ void uiGetSupplierDescending(Console* ui)
     char* name = (char*)malloc(sizeof(char));
 
     printf("Input name: ");
-    getline(&name, &size, stdin); //dummy
+    // getline(&name, &size, stdin); //dummy
     name = getString();
     items = CtrlSort(ui->controller, name, "", 0, 1);
     // items = CtrlGetSupplierDescending(ui->controller, name, 1);
@@ -325,8 +326,8 @@ char* getCommand()
     Function to get input command.
     */
     printf("Input command: ");
-    char* command = (char*)malloc(sizeof(char));
-    scanf("%s", command);
+    char* command = getString();
+    // scanf("%s", command);
     return command;
 }
 
@@ -335,8 +336,8 @@ int getInteger()
     /*
     Function to convert given string from standard input to integer.
     */
-    char* str = (char*)malloc(sizeof(char));
-    scanf("%s", str);
+    char* str = getString();
+    // scanf("%s", str);
     if (strstr(str, " "))
         return -1;
     int integer = atoi(str);
@@ -350,9 +351,9 @@ int* getDateIntegers()
     /*
     Function to convert given string from standard input to date type integers.
     */
-    char* str = (char*)malloc(sizeof(char)), * temp = (char*)malloc(sizeof(char));
+    char* str, * temp = (char*)malloc(sizeof(char));
     int* date = (int*)malloc(sizeof(int));
-    scanf("%s", str);
+    str = getString();
 
     if (strlen(str) != 10 || str[2] != '.' || str[5] != '.')
     {
@@ -435,6 +436,8 @@ void loop(Console* ui)
     /*
     Main program loop.
     */
+
+    getString();
     while (1)
     {
         printMenu();

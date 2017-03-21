@@ -13,4 +13,5 @@ int sortByNameGen(material* a, material*b);
 int sortBySuplGen(material* a, material*b);
 int sortByQtyGen(material* a, material*b);
 int sortByExpDateGen(material* a, material* b);
+material* strToMaterial(char* str);
 void runAllTests();

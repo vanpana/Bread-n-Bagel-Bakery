@@ -226,6 +226,32 @@ int sortByExpDateGen(material* a, material* b)
     return 0;
 }
 
+material* strToMaterial(char* str)
+{
+    material* m = (material*)malloc(sizeof(material));
+    int counter = 1;
+    char* p;
+    p = strtok(str, ",");
+    while (p)
+    {
+        if (counter == 1)
+            strcpy(m->name, p);
+        else if (counter == 2)
+            strcpy(m->supplier, p);
+        else if (counter == 3)
+            m->day = atoi(p);
+        else if (counter == 4)
+            m->month = atoi(p);
+        else if (counter == 5)
+            m->year = atoi(p);
+        else m->qty = atoi(p);
+
+        p = strtok(NULL, ",");
+        counter++;
+    }
+    return m;
+}
+
 void runAllTests()
 {
     runRepoTests();
